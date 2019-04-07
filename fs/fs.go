@@ -11,6 +11,7 @@ import (
 	"os"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/hanwen/go-fuse/fuse"
 	"github.com/hanwen/go-fuse/fuse/nodefs"
@@ -189,6 +190,11 @@ func SanitizeDosName(name string) string {
 		}
 	}
 	return string(dest)
+}
+
+func SanitizeName(name string) string {
+	// Creating files or directories with trailing space causes GeneralError
+	return strings.TrimRightFunc(name, unicode.IsSpace)
 }
 
 ////////////////
@@ -447,7 +453,7 @@ func (n *folderNode) Mkdir(name string, mode uint32, context *fuse.Context) (*no
 	}
 
 	obj := mtp.ObjectInfo{
-		Filename:         name,
+		Filename:         SanitizeName(name),
 		ObjectFormat:     mtp.OFC_Association,
 		ModificationDate: time.Now(),
 		ParentObject:     n.Handle(),
@@ -463,7 +469,7 @@ func (n *folderNode) Mkdir(name string, mode uint32, context *fuse.Context) (*no
 	}
 
 	f := n.fs.newFolder(obj, newId)
-	return n.Inode().NewChild(name, true, f), fuse.OK
+	return n.Inode().NewChild(obj.Filename, true, f), fuse.OK
 }
 
 func (n *folderNode) Unlink(name string, c *fuse.Context) fuse.Status {
@@ -500,7 +506,7 @@ func (n *folderNode) Create(name string, flags uint32, mode uint32, context *fus
 
 	obj := mtp.ObjectInfo{
 		StorageID:        n.StorageID(),
-		Filename:         name,
+		Filename:         SanitizeName(name),
 		ObjectFormat:     mtp.OFC_Undefined,
 		ModificationDate: time.Now(),
 		ParentObject:     n.Handle(),
@@ -545,5 +551,5 @@ func (n *folderNode) Create(name string, flags uint32, mode uint32, context *fus
 			return nil, nil, fuse.ToStatus(err)
 		}
 	}
-	return file, n.Inode().NewChild(name, false, fsNode), fuse.OK
+	return file, n.Inode().NewChild(obj.Filename, false, fsNode), fuse.OK
 }
