@@ -16,7 +16,7 @@ import (
 
 	"github.com/hanwen/go-fuse/fuse"
 	"github.com/hanwen/go-fuse/fuse/nodefs"
-	"github.com/hanwen/go-mtpfs/mtp"
+	"github.com/softashell/go-mtpfs/mtp"
 )
 
 // VerboseTest returns true if the testing framework is run with -v.

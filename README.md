@@ -36,7 +36,7 @@ go get github.com/hanwen/go-mtpfs
   comment near the top of usb/usb.go, ie.
 ```
 # edit to suit libusb installation:
-vi /tmp/go/src/github.com/hanwen/go-mtpfs/usb/usb.go
+vi /tmp/go/src/github.com/softashell/go-mtpfs/usb/usb.go
 go install github.com/hanwen/go-mtpfs
 ```
 * A 32 and 64-bit linux x86 binaries are at
