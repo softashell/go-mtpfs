@@ -512,6 +512,9 @@ func (n *folderNode) Create(name string, flags uint32, mode uint32, context *fus
 		ParentObject:     n.Handle(),
 		CompressedSize:   0,
 	}
+	if n.fs.mungeVfat[n.StorageID()] {
+		obj.Filename = SanitizeDosName(obj.Filename)
+	}
 
 	var file nodefs.File
 	var fsNode nodefs.Node
